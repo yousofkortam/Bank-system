@@ -72,8 +72,8 @@ The `BankApplication` class provides a command-line interface for customers to i
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/your-username/banking-application.git
-    cd banking-application
+    git clone https://github.com/yousofkortam/Bank-system.git
+    cd Bank-system
     ```
 
 2. Compile the Java source files:
