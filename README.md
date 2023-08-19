@@ -101,6 +101,3 @@ Contributions to this project are welcome! If you would like to contribute, plea
 3. Make your changes and test thoroughly.
 4. Create a pull request explaining your changes and the problem they solve.
    
----
-
-Feel free to customize this README according to your project's specific details. Good luck with your Banking Application project! If you need any further assistance, please don't hesitate to ask.
