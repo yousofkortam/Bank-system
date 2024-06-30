@@ -1,5 +1,4 @@
-public class SavingsAccount extends Account{
-
+class SavingsAccount extends Account {
     private final double interest;
 
     public SavingsAccount(int accountNumber, String accountHolderName, double balance, double interest) {
@@ -13,6 +12,6 @@ public class SavingsAccount extends Account{
 
     public double calculateInterest() {
         double balance = getBalance();
-        return balance * interest / 100.0f;
+        return balance * interest / 100.0;
     }
 }

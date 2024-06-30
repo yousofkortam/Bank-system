@@ -1,64 +1,111 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class Bank {
-    List<Account> accounts;
+class Bank {
+    private List<Account> accounts = new ArrayList<>();
 
-    public Bank() {
-        accounts = new ArrayList<>();
+    public void addAccount(Account account) {
+        accounts.add(account);
+    }
+
+    public void deposit(int accountNumber, double amount) throws Exception {
+        Account account = findAccount(accountNumber);
+        account.deposit(amount);
+        if (account.getBalance() < 100) {
+            account.setNotification("Low balance alert!");
+        }
+    }
+
+    public void withdraw(int accountNumber, double amount) throws Exception {
+        Account account = findAccount(accountNumber);
+        account.withdraw(amount);
+        if (account.getBalance() < 100) {
+            account.setNotification("Low balance alert!");
+        }
+    }
+
+    public double displayBalance(int accountNumber) throws Exception {
+        Account account = findAccount(accountNumber);
+        return account.getBalance();
     }
 
     public int showNumberOfAccounts() {
         return accounts.size();
     }
 
-    private Account findAccount(int accountNumber) {
-        for (Account account : accounts) {
-            if (account.getAccountNumber() == accountNumber)
-                return account;
-        }
-        return null;
-    }
-
-    public void addAccount(Account account) throws Exception {
-        Account searchAccount = findAccount(account.getAccountNumber());
-        if (searchAccount == null) {
-            accounts.add(account);
-            System.out.println("Account added successfully");
-            return;
-        }
-        throw new Exception("Account already use");
-    }
-
-    public void deposit(int accountNumber, double amount) throws IllegalArgumentException {
+    public void displayInfo(int accountNumber) throws Exception {
         Account account = findAccount(accountNumber);
-        if (account == null) {
-            throw new IllegalArgumentException("Account not found");
-        }
-        account.deposit(amount);
+        System.out.println(account);
     }
 
-    public void withdraw(int accountNumber, double amount) throws IllegalArgumentException {
-        Account account = findAccount(accountNumber);
-        if (account == null) {
-            throw new IllegalArgumentException("Account not found");
-        }
-        account.withdraw(amount);
+    public void transfer(int sourceAccountNumber, int destinationAccountNumber, double amount) throws Exception {
+        Account sourceAccount = findAccount(sourceAccountNumber);
+        Account destinationAccount = findAccount(destinationAccountNumber);
+        sourceAccount.withdraw(amount);
+        destinationAccount.deposit(amount);
     }
 
-    public double displayBalance(int accountNumber) throws IllegalArgumentException {
+    public void closeAccount(int accountNumber) throws Exception {
         Account account = findAccount(accountNumber);
-        if (account == null) {
-            throw new IllegalArgumentException("Account not found");
-        }
-        return account.getBalance();
+        accounts.remove(account);
     }
 
-    public void displayInfo(int accountNumber) throws IllegalArgumentException {
+    public void updateAccountInfo(int accountNumber, String holderName) throws Exception {
         Account account = findAccount(accountNumber);
-        if (account == null) {
-            throw new IllegalArgumentException("Account not found");
+        account.setHolderName(holderName);
+    }
+
+    public void viewTransactionHistory(int accountNumber) throws Exception {
+        Account account = findAccount(accountNumber);
+        System.out.println(account.getTransactionHistory());
+    }
+
+    public double calculateInterest(int accountNumber) throws Exception {
+        Account account = findAccount(accountNumber);
+        if (account instanceof SavingsAccount) {
+            return ((SavingsAccount) account).calculateInterest();
+        } else if (account instanceof FixedDepositAccount) {
+            return ((FixedDepositAccount) account).calculateMaturityAmount() - account.getBalance();
+        } else {
+            throw new Exception("Interest calculation is only available for savings and fixed deposit accounts.");
         }
-        System.out.println(account.showAccountInfo());
+    }
+
+    public void setWithdrawalLimit(int accountNumber, double limit) throws Exception {
+        Account account = findAccount(accountNumber);
+        account.setWithdrawalLimit(limit);
+    }
+
+    public void applyForLoan(int accountNumber, double amount, int term) throws Exception {
+        Account account = findAccount(accountNumber);
+        account.applyForLoan(amount, term);
+    }
+
+    public void viewLoanStatus(int accountNumber) throws Exception {
+        Account account = findAccount(accountNumber);
+        System.out.println(account.getLoanStatus());
+    }
+
+    public void repayLoan(int accountNumber, double amount) throws Exception {
+        Account account = findAccount(accountNumber);
+        account.repayLoan(amount);
+    }
+
+    public void setupRecurringDeposit(int accountNumber, double amount, int frequency) throws Exception {
+        Account account = findAccount(accountNumber);
+        account.setupRecurringDeposit(amount, frequency);
+    }
+
+    public void exportAccountStatement(int accountNumber) throws Exception {
+        Account account = findAccount(accountNumber);
+        System.out.println("Exporting statement for account: " + account);
+        // Implementation for exporting the statement to a file can be added here
+    }
+
+    private Account findAccount(int accountNumber) throws Exception {
+        return accounts.stream()
+                .filter(account -> account.getAccountNumber() == accountNumber)
+                .findFirst()
+                .orElseThrow(() -> new Exception("Account not found."));
     }
 }
