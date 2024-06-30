@@ -1,11 +1,18 @@
-public class Account {
-    private int accountNumber;
-    private String accountHolderName;
-    private double balance;
+import java.util.ArrayList;
+import java.util.List;
 
-    public Account(int accountNumber, String accountHolderName, double balance) {
+abstract class Account {
+    private int accountNumber;
+    private String holderName;
+    private double balance;
+    private double withdrawalLimit;
+    private List<String> transactionHistory = new ArrayList<>();
+    private Loan loan;
+    private String notification;
+
+    public Account(int accountNumber, String holderName, double balance) {
         this.accountNumber = accountNumber;
-        this.accountHolderName = accountHolderName;
+        this.holderName = holderName;
         this.balance = balance;
     }
 
@@ -13,44 +20,80 @@ public class Account {
         return accountNumber;
     }
 
-    public void setAccountNumber(int accountNumber) {
-        this.accountNumber = accountNumber;
+    public String getHolderName() {
+        return holderName;
     }
 
-    public String getAccountHolderName() {
-        return accountHolderName;
-    }
-
-    public void setAccountHolderName(String accountHolderName) {
-        this.accountHolderName = accountHolderName;
+    public void setHolderName(String holderName) {
+        this.holderName = holderName;
     }
 
     public double getBalance() {
         return balance;
     }
 
-    public void setBalance(double balance) {
-        this.balance = balance;
-    }
-
     public void deposit(double amount) {
-        if (amount > 0)
-            balance += amount;
-        else
-            throw new IllegalArgumentException("Amount must be greater than zero");
+        balance += amount;
+        transactionHistory.add("Deposited: " + amount + " at " + java.time.LocalDateTime.now());
     }
 
-    public void withdraw(double amount) {
-        if (amount <= 0) {
-            throw new IllegalArgumentException("Amount must be greater than zero");
-        }
+    public void withdraw(double amount) throws Exception {
         if (amount > balance) {
-            throw new IllegalArgumentException("Not enough money");
+            throw new Exception("Insufficient funds.");
+        }
+        if (amount > withdrawalLimit) {
+            throw new Exception("Withdrawal limit exceeded.");
         }
         balance -= amount;
+        transactionHistory.add("Withdrew: " + amount + " at " + java.time.LocalDateTime.now());
     }
 
-    public String showAccountInfo() {
-        return "Account number: " + accountNumber + " Owner name: " + accountHolderName + " Balance: " + balance;
+    public List<String> getTransactionHistory() {
+        return transactionHistory;
+    }
+
+    public void setWithdrawalLimit(double limit) {
+        this.withdrawalLimit = limit;
+    }
+
+    public void applyForLoan(double amount, int term) {
+        loan = new Loan(amount, term);
+        transactionHistory.add("Loan applied: " + amount + " at " + java.time.LocalDateTime.now());
+    }
+
+    public String getLoanStatus() {
+        if (loan == null) {
+            return "No loan.";
+        }
+        return loan.toString();
+    }
+
+    public void repayLoan(double amount) {
+        if (loan != null) {
+            loan.repay(amount);
+            transactionHistory.add("Loan repaid: " + amount + " at " + java.time.LocalDateTime.now());
+        }
+    }
+
+    public void setupRecurringDeposit(double amount, int frequency) {
+        transactionHistory.add("Recurring deposit set up: " + amount + " every " + frequency + " days at " + java.time.LocalDateTime.now());
+    }
+
+    public void setNotification(String message) {
+        this.notification = message;
+    }
+
+    public String getNotification() {
+        return notification;
+    }
+
+    @Override
+    public String toString() {
+        return "Account{" +
+                "accountNumber=" + accountNumber +
+                ", holderName='" + holderName + '\'' +
+                ", balance=" + balance +
+                ", withdrawalLimit=" + withdrawalLimit +
+                '}';
     }
 }
